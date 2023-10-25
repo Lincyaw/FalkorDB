@@ -12,7 +12,7 @@
 #include "globals.h"
 #include "util/thpool/pools.h"
 #include "commands/cmd_context.h"
-
+extern void __gcov_dump();
 static struct sigaction old_act;
 
 static void startCrashReport(void) {
@@ -45,6 +45,8 @@ void InfoFunc
 	RedisModuleInfoCtx *ctx,
 	int for_crash_report
 ) {
+	printf("============dumping coverage==============\n");
+	__gcov_dump();
 	// make sure information is requested for crash report
 	if(!for_crash_report) return;
 
@@ -80,6 +82,8 @@ void crashHandler
 	siginfo_t *info,
 	void *ucontext
 ) {
+	printf("============dumping coverage==============\n");
+	__gcov_dump();
 	// pause all working threads
 	// NOTE: pausing is an async operation
 	ThreadPools_Pause();

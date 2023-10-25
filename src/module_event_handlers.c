@@ -17,7 +17,7 @@
 #include "configuration/config.h"
 #include "serializers/graphmeta_type.h"
 #include "serializers/graphcontext_type.h"
-
+extern void __gcov_dump();
 // indicates the possibility of half-baked graphs in the keyspace
 #define INTERMEDIATE_GRAPHS (aux_field_counter > 0)
 
@@ -53,6 +53,8 @@ static int _GenericKeyspaceHandler
 	const char *event,
 	RedisModuleString *key_name
 ) {
+	printf("============dumping coverage==============\n");
+	__gcov_dump();
 	if(type != REDISMODULE_NOTIFY_GENERIC) {
 		return REDISMODULE_OK;
 	}
@@ -251,6 +253,8 @@ static void _FlushDBHandler
 	uint64_t subevent,
 	void *data
 ) {
+	printf("============dumping coverage==============\n");
+	__gcov_dump();
 	ASSERT(eid.id == REDISMODULE_EVENT_FLUSHDB);
 
 	if(subevent == REDISMODULE_SUBEVENT_FLUSHDB_START) {
@@ -308,6 +312,8 @@ static void _ReplicationRoleChangedEventHandler
 // server persistence event handler
 static void _PersistenceEventHandler(RedisModuleCtx *ctx, RedisModuleEvent eid,
 		uint64_t subevent, void *data) {
+	printf("============dumping coverage==============\n");
+	__gcov_dump();
 	if(INTERMEDIATE_GRAPHS) {
 		// check for half-baked graphs
 		// indicated by `aux_field_counter` > 0
@@ -341,6 +347,8 @@ static void _ShutdownEventHandler
 	uint64_t subevent,
 	void *data
 ) {
+	printf("============dumping coverage==============\n");
+	__gcov_dump();
 	void RediSearch_CleanupModule();
 	if (!getenv("RS_GLOBAL_DTORS")) {  // used only with sanitizer or valgrind
 		return; 
